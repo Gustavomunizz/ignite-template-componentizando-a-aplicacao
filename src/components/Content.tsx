@@ -7,7 +7,6 @@ import '../styles/content.scss'
 
 interface ContentProps {
   selectedGenreId: number
-  selectedGenre: GenreResponseProps
 }
 interface MovieProps {
   imdbID: string
@@ -20,9 +19,12 @@ interface MovieProps {
   Runtime: string
 }
 
-export function Content({ selectedGenreId, selectedGenre }: ContentProps) {
+export function Content({ selectedGenreId }: ContentProps) {
   // Complete aqui
   const [movies, setMovies] = useState<MovieProps[]>([])
+  const [selectedGenre, setSelectedGenre] = useState<GenreResponseProps>(
+    {} as GenreResponseProps
+  )
 
   useEffect(() => {
     api
@@ -30,6 +32,12 @@ export function Content({ selectedGenreId, selectedGenre }: ContentProps) {
       .then(response => {
         setMovies(response.data)
       })
+  }, [selectedGenreId])
+
+  useEffect(() => {
+    api.get<GenreResponseProps>(`genres/${selectedGenreId}`).then(response => {
+      setSelectedGenre(response.data)
+    })
   }, [selectedGenreId])
 
   return (
